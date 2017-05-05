@@ -7,6 +7,8 @@
 #include <vector>
 #include "loadBMP.h"
 
+std::vector<std::string> compress(std::vector<std::string>);
+
 int main() {
     setlocale(LC_ALL, "");
 
@@ -16,16 +18,12 @@ int main() {
     int height = colors.height;
     unsigned char * data = colors.data;
 
-    // FILE *f = fopen("out.txt", "w");
+    FILE *in = fopen("in.txt", "w");
+    FILE *out = fopen("out.txt", "w");
     std::vector<std::vector<std::string>> mat(width, std::vector<std::string>(height));
-    
-    using element_t = std::unordered_map<int, std::string>;
-    using line_t = std::vector<element_t>;
-    using matrix_t = std::vector<line_t>;
-    matrix_t res(width, line_t(height));
 
-    element_t pair;
     int pos = 0;
+    std::vector<std::string> res;
     
     for (int i = 0; i < width; ++i) {
         for (int j = 0; j < height; ++j) {
@@ -35,31 +33,39 @@ int main() {
                 (int)data[pos] << ',' << ' ' << 
                 (int)data[pos+1] << ',' << ' ' << 
                 (int)data[pos+2] << ']';
-            // std::cout << buff.str();
             mat[i][j] = buff.str();
-            // fprintf(f, buff.str().c_str());
+            fprintf(in, mat[i][j].c_str());
         }
-        // std::cout << std::endl;
-        // fprintf(f, "\n");
-    }
-
-    int count = 1;
-    for (int i = 0; i < width; i++) {
-        std::string curr = mat[i][0];
-        for (int j = 1; j < height; j++) {
-            if (curr == mat[i][j]){
-                count++;
-            } else {
-                std::cout << '(' << count << ',' << ' ' << curr << ')' << ' ';
-                curr = mat[i][j];
-                count = 1;
-            }
+        res = compress(mat[i]);
+        for (int k = 0; k < res.size(); k++) {
+        	fprintf(out, res[k].c_str());
         }
-        std::cout << '(' << count << ',' << ' ' << curr << ')' << ' ';
-        std::cout << std::endl;
+        fprintf(in, "\n");
     }
     
-    // fclose(f);
+    fclose(in);
+    fclose(out);
 
     return 0;
+}
+
+std::vector<std::string> compress(std::vector<std::string> line) {
+	std::vector<std::string> resline;
+	int count = 1;
+	std::string curr = line[0];
+    for (int j = 1; j < line.size(); j++) {
+        if (curr == line[j]) {
+            count++;
+        } else {
+        	std::ostringstream buff;
+            buff << '(' << count << ',' << ' ' << curr << ')' << ' ';
+            resline.push_back(buff.str());
+            curr = line[j];
+            count = 1;
+        }
+    }
+    std::ostringstream buff;
+    buff << '(' << count << ',' << ' ' << curr << ')' << ' ' << std::endl;
+    resline.push_back(buff.str());
+    return resline;
 }

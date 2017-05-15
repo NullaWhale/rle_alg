@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "LoadTexture.h"
+#include "loadBMP.h"
 
 #pragma pack(push, 1)
 struct header_t
@@ -26,9 +26,9 @@ struct info_header_t
 };
 #pragma pack(pop)
 
-struct map_t loadBMP(const char* filename)
+struct colors_t loadBMP(const char* filename)
 {
-    struct map_t map;
+    struct colors_t map;
     map.name = (char*)filename;
 
     FILE* file = fopen(filename, "rb");

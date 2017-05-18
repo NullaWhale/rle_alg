@@ -11,4 +11,7 @@ For compiling: `javac -cp . Main.java` <br>
 For executing: `java -cp . Main` <br><br>
 For 'c++': <br>
 For compiling: `g++ -std=c++11 -o rle Main.cpp loadBMP.cpp` <br>
-For executing: `rle.exe`
+For executing: `rle.exe` <br><br>
+For 'kotlin': <br>
+For compiling: `kotlinc main.kt` <br>
+For executing: `kotlin -cp . MainKt`
